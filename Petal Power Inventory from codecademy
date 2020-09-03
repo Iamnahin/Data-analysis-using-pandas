@@ -1,0 +1,25 @@
+import pandas as pd
+#it loads the csv file
+inventory=pd.read_csv('inventory.csv')
+#setting the first 10 rows as staten_island
+staten_island=inventory.head(10)
+#assigning the product description column to product request
+product_request=staten_island['product_description']
+#checking if there is a seeds available in brooklyn
+seed_request=inventory[(inventory.location=="Brooklyn") & (inventory.product_type=="seeds") ]
+
+#checking if there is enough quantity,if available set true else false 
+inventory["in_stock"]=inventory.quantity.apply(lambda x : True if x>0 else False)
+
+#multiplying price column with quantity column
+inventory["total_value"]=inventory.price* inventory.quantity
+
+combine_lambda = lambda row: \
+    '{} - {}'.format(row.product_type,
+                     row.product_description)
+
+
+
+inventory["full_description"]=inventory.apply(combine_lambda,axis=1)
+
+print(inventory.head(10))
